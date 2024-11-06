@@ -1,0 +1,37 @@
+[
+    {
+      "name": "src",
+      "type": "folder",
+      "children": [
+        {
+          "name": "index.js",
+          "type": "file"
+        },
+        {
+          "name": "components",
+          "type": "folder",
+          "children": [
+            {
+              "name": "Header.js",
+              "type": "file"
+            },
+            {
+              "name": "Footer.js",
+              "type": "file"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "assets",
+      "type": "folder",
+      "children": [
+        {
+          "name": "logo.png",
+          "type": "file"
+        }
+      ]
+    }
+  ]
+  
