@@ -29,19 +29,20 @@ body {
 }
 
 .add-folder-btn, .add-file-btn {
-    background-color: #007acc;
+    /* background-color: #007acc; */
     color: white;
     border: none;
     padding: 8px;
-    width: 100%;
-    text-align: left;
+    width: auto;
+    /* text-align: right; */
     cursor: pointer;
     font-size: 14px;
     margin-bottom: 10px;
+    right:0;
 }
 
 .add-folder-btn:hover, .add-file-btn:hover {
-    background-color: #005f99;
+    background-color: #c2bdbc;
 }
 
 .collapsible {

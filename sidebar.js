@@ -3,13 +3,13 @@ document.addEventListener("DOMContentLoaded", async function () {
   const sidebarContainer = document.getElementById("sidebar");
 
   const addFolderBtn = document.createElement("button");
-  addFolderBtn.textContent = "➕ Add Folder";
+  addFolderBtn.innerHTML = `<img src="icons/folder-add.png" class="folder-icon" />`;
   addFolderBtn.classList.add("add-folder-btn");
   addFolderBtn.addEventListener("click", addNewFolder);
   sidebarContainer.appendChild(addFolderBtn);
 
   const addFileBtn = document.createElement("button");
-  addFileBtn.textContent = "📄 Add File";
+  addFileBtn.innerHTML = `<img src="icons/file-add.png" class="file-icon" />`;
   addFileBtn.classList.add("add-file-btn");
   addFileBtn.addEventListener("click", addNewRootFile);
   sidebarContainer.appendChild(addFileBtn);
@@ -51,15 +51,26 @@ function renderSidebar(data, container) {
 function renderFolder(folder, container) {
   const folderElement = document.createElement("div");
   folderElement.classList.add("folder");
-  folderElement.innerHTML = `<img src="icons/folder.png" class="folder-icon" /> ${folder.name} 
-          <span class="add-file" onclick="addFile('${folder.name}')">+</span>`;
+
+  // Set folder icon based on whether it's open or closed
+  const folderIcon = folder.open ? "folder-open.png" : "folder-closed.png";
+  folderElement.innerHTML = `<img src="icons/${folderIcon}" class="folder-icon" /> ${folder.name} 
+  <span class="add-file" onclick="addFile('${folder.name}')">🗄️</span>
+              <span class="add-folder" onclick="addFolder('${folder.name}')">📁</span>
+              `;
 
   const childrenContainer = document.createElement("div");
   childrenContainer.classList.add("collapsible");
 
   folderElement.addEventListener("click", function (e) {
     if (e.target.tagName !== "SPAN") {
+      // Toggle the open/closed state of the folder
+      const isOpen = childrenContainer.classList.contains("open");
       childrenContainer.classList.toggle("open");
+
+      // Update the icon based on folder state
+      const newIcon = isOpen ? "folder-closed.png" : "folder-open.png";
+      folderElement.querySelector(".folder-icon").src = `icons/${newIcon}`;
     }
   });
 
@@ -102,7 +113,12 @@ function addNewRootFile() {
 function addNewFolder() {
   const folderName = prompt("Enter the name of the new folder:");
   if (folderName) {
-    const newFolder = { name: folderName, type: "folder", children: [] };
+    const newFolder = {
+      name: folderName,
+      type: "folder",
+      children: [],
+      open: false,
+    };
     window.sidebarData.push(newFolder);
 
     const sidebarContainer = document.getElementById("sidebar");
@@ -145,6 +161,39 @@ function addFile(folderName) {
 
       if (folderDOM) {
         renderFile(newFile, folderDOM);
+        folderDOM.classList.add("open");
+      }
+    }
+  }
+}
+
+function addFolder(folderName) {
+  const newFolderName = prompt("Enter the name of the new folder:");
+  if (newFolderName) {
+    const newFolder = {
+      name: newFolderName,
+      type: "folder",
+      children: [],
+      open: false,
+    };
+
+    const parentFolder = findFolder(folderName, window.sidebarData);
+    if (parentFolder) {
+      parentFolder.children = parentFolder.children || [];
+      parentFolder.children.push(newFolder);
+
+      const sidebarContainer = document.getElementById("sidebar");
+      const folders = sidebarContainer.querySelectorAll(".folder");
+      let folderDOM = null;
+
+      folders.forEach((f) => {
+        if (f.textContent.trim().includes(folderName)) {
+          folderDOM = f.nextElementSibling;
+        }
+      });
+
+      if (folderDOM) {
+        renderFolder(newFolder, folderDOM);
         folderDOM.classList.add("open");
       }
     }
